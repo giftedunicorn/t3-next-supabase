@@ -1,5 +1,4 @@
-import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { supabase } from "@/utils/supabase/server";
 
 export const SignUp = () => {
   const signUp = async (formData: FormData) => {
@@ -9,11 +8,7 @@ export const SignUp = () => {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    const supabase = createServerActionClient({
-      cookies,
-    });
-
-    const { data, error } = await supabase.auth.signUp({
+    const { data, error } = await supabase().auth.signUp({
       email,
       password,
       options: {
@@ -32,7 +27,7 @@ export const SignUp = () => {
         <input
           type="text"
           name="name"
-          className="ml-2 border border-gray-300 rounded-md"
+          className="ml-2 rounded-md border border-gray-300"
         />
       </div>
       <div className="m-2">
@@ -40,7 +35,7 @@ export const SignUp = () => {
         <input
           type="email"
           name="email"
-          className="ml-2 border border-gray-300 rounded-md"
+          className="ml-2 rounded-md border border-gray-300"
         />
       </div>
       <div className="m-2">
@@ -48,12 +43,12 @@ export const SignUp = () => {
         <input
           type="password"
           name="password"
-          className="ml-2 border border-gray-300 rounded-md"
+          className="ml-2 rounded-md border border-gray-300"
         />
       </div>
       <button
         type="submit"
-        className="m-2 p-2 border border-gray-300 rounded-md"
+        className="m-2 rounded-md border border-gray-300 p-2"
       >
         Submit
       </button>

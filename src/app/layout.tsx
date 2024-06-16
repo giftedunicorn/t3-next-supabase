@@ -1,8 +1,9 @@
 import "@/styles/globals.css";
 
 import { GeistSans } from "geist/font/sans";
-
 import { TRPCReactProvider } from "@/trpc/react";
+import { getServerUser } from "@/utils/supabase/server";
+import { AuthProvider } from "@/providers/AuthProvider";
 
 export const metadata = {
   title: "Create T3 App",
@@ -10,15 +11,19 @@ export const metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const data = await getServerUser();
+
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TRPCReactProvider>
+          <AuthProvider {...data}>{children}</AuthProvider>
+        </TRPCReactProvider>
       </body>
     </html>
   );

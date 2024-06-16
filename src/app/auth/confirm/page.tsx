@@ -2,16 +2,31 @@
 
 import { supabase } from "@/utils/supabase/client";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const PopupCallback = () => {
   const [mounted, setMounted] = useState(false);
   const params = useSearchParams();
-  const code = params.get("code");
+  const token_hash = params.get("token_hash");
+  const type = params.get("type") as "magiclink" | null;
+
+  const verifyOtp = useCallback(async () => {
+    if (!token_hash) return;
+    if (!type) return;
+
+    const { error } = await supabase().auth.verifyOtp({ token_hash, type });
+
+    if (error) {
+      console.error("verifyOtp", error);
+    }
+  }, [token_hash, type]);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    if (!token_hash) return;
+
+    void verifyOtp();
+  }, [token_hash, verifyOtp]);
 
   useEffect(() => {
     const { data: authListener } = supabase().auth.onAuthStateChange(
@@ -32,7 +47,7 @@ const PopupCallback = () => {
   if (!mounted) return null;
 
   // Close the popup if there is no code
-  if (!code) {
+  if (!token_hash) {
     window.close();
   }
 

@@ -1,17 +1,13 @@
 "use client";
 
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useAuth } from "@/hooks/useAuth";
 
 export const LogOut = () => {
-  const supabase = createClientComponentClient();
-
-  const logOut = async () => {
-    await supabase.auth.signOut();
-  };
+  const { logOut } = useAuth();
 
   return (
     <button
-      className="m-2 p-2 border border-gray-300 rounded-md"
+      className="m-2 rounded-md border border-gray-300 p-2"
       onClick={logOut}
     >
       LogOut
